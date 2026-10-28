@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>今日のわたしに届く一枚</title>
+<meta name="description" content="3つ選ぶだけ。今日のあなたに届くアートと言葉を、そっとお渡しします。">
+<meta name="theme-color" content="#faf8f4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Shippori+Mincho:wght@400;600&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#db7da0; --mint:#b4dbdb; --mint-light:#e8f5f2; --mint-dark:#7fb8ad;
+  --gold:#dbc992; --rose:#d4b5b5; --brown:#6b4e3d; --warm-gray:#9c8c8c;
+  --bg:#faf8f4; --card:#ffffff; --section:#f5f0e8;
+  --text:#3a3632; --text-sub:#6b6560; --text-faint:#9a948e;
+  --line:#06C755;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"Zen Maru Gothic",sans-serif; font-size:14px; line-height:1.9;
+  min-height:100vh; min-height:100dvh;
+}
+.app{max-width:480px;margin:0 auto;padding:28px 20px 48px;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.screen{display:none;flex:1;flex-direction:column;animation:fade .6s ease}
+.screen.on{display:flex}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.label{font-family:"Cormorant Garamond",serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--warm-gray);text-align:center}
+.mincho{font-family:"Shippori Mincho",serif}
+.divider{width:40px;height:1px;background:rgba(219,201,146,.6);margin:18px auto}
+.muted{color:var(--text-faint);font-size:11px;line-height:1.8}
+
+/* intro */
+.intro-art{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:22px 0 26px}
+.intro-art img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;opacity:.95}
+.intro-art img:nth-child(2){transform:translateY(-10px)}
+.intro h1{font-family:"Shippori Mincho",serif;font-weight:600;font-size:22px;line-height:1.7;text-align:center;letter-spacing:.06em}
+.intro p.lead{text-align:center;color:var(--text-sub);font-size:13px;line-height:2.1;margin-top:14px}
+.steps{display:flex;justify-content:center;gap:18px;margin:22px 0 6px;font-size:11px;color:var(--text-sub)}
+.steps span{display:flex;flex-direction:column;align-items:center;gap:4px}
+.steps b{width:24px;height:24px;border-radius:50%;background:var(--mint);color:#fff;font-size:11px;display:grid;place-items:center;font-weight:700}
+
+/* buttons */
+.btn{appearance:none;border:0;cursor:pointer;font:inherit;font-weight:700;font-size:14px;border-radius:40px;padding:14px 22px;width:100%;transition:transform .15s ease,opacity .2s}
+.btn:active{transform:scale(.98)}
+.btn-main{background:var(--brown);color:#fff;box-shadow:0 4px 14px rgba(107,78,61,.15)}
+.btn-ghost{background:transparent;color:var(--text-sub);border:1px solid var(--rose);font-weight:500}
+.btn-row{display:flex;flex-direction:column;gap:10px;margin-top:auto;padding-top:24px}
+.text-btn{background:none;border:0;font:inherit;color:var(--text-faint);font-size:12px;cursor:pointer;padding:8px;text-decoration:underline;text-underline-offset:3px}
+
+/* question */
+.progress{display:flex;gap:6px;justify-content:center;margin-bottom:22px}
+.progress i{width:28px;height:3px;border-radius:2px;background:var(--section)}
+.progress i.on{background:var(--gold)}
+.q-title{font-family:"Shippori Mincho",serif;font-size:19px;font-weight:600;text-align:center;line-height:1.7;margin:6px 0 4px}
+.q-sub{text-align:center;color:var(--text-faint);font-size:12px;margin-bottom:22px}
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{
+  appearance:none;font:inherit;text-align:left;cursor:pointer;color:var(--text);
+  background:var(--card);border:1px solid rgba(196,162,101,.15);border-radius:14px;
+  padding:14px 16px;box-shadow:0 2px 12px rgba(0,0,0,.04);font-size:14px;line-height:1.6;
+  display:flex;align-items:center;gap:12px;transition:border-color .2s,background .2s;
+}
+.opt .dot{flex:none;width:16px;height:16px;border-radius:50%;border:1px solid var(--rose)}
+.opt.sel{border-color:var(--mint-dark);background:var(--mint-light)}
+.opt.sel .dot{background:var(--mint-dark);border-color:var(--mint-dark);box-shadow:inset 0 0 0 3px var(--mint-light)}
+.words{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.words .opt{justify-content:center;font-family:"Shippori Mincho",serif;font-size:16px;padding:18px 10px;letter-spacing:.1em}
+.words .opt .dot{display:none}
+.words .opt:last-child{grid-column:1/-1}
+
+/* loading */
+.loading{align-items:center;justify-content:center;text-align:center;gap:18px}
+.loading .ring{width:46px;height:46px;border-radius:50%;border:1px solid var(--section);border-top-color:var(--gold);animation:spin 1.4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* result */
+.card{background:var(--card);border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.05);border:1px solid rgba(196,162,101,.1)}
+.type-card{padding:28px 22px 24px;text-align:center}
+.type-card .kicker{font-size:12px;color:var(--text-sub)}
+.type-card h2{font-family:"Shippori Mincho",serif;font-size:24px;font-weight:600;letter-spacing:.08em;margin:6px 0 2px;line-height:1.6}
+.type-card .en{font-family:"Cormorant Garamond",serif;font-style:italic;color:var(--warm-gray);font-size:14px}
+.type-card .body{text-align:left;font-size:13px;line-height:2.05;color:var(--text);margin-top:18px;white-space:pre-line}
+.rx{margin-top:18px;background:var(--mint-light);border:1px solid var(--mint);border-radius:10px;padding:14px 16px;text-align:left}
+.rx .t{font-size:12px;font-weight:700;color:var(--mint-dark);margin-bottom:4px}
+.rx p{font-size:13px;line-height:1.9}
+.pager{text-align:center;color:var(--text-faint);font-size:11px;margin:16px 0 0;letter-spacing:.1em}
+
+.art-card{padding:10px;text-align:center}
+.art-card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;display:block;background:var(--section)}
+
+/* save sheet */
+.sheet{position:fixed;inset:0;background:rgba(58,54,50,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
+.sheet.on{display:flex;animation:fade .3s ease}
+.sheet-inner{background:var(--bg);border-radius:14px;padding:18px;max-width:400px;width:100%;max-height:92vh;overflow:auto;text-align:center}
+.sheet-inner img{width:100%;border-radius:10px;display:block;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+
+/* series / history */
+.series{margin-top:30px;padding:26px 18px 22px;text-align:center}
+.series h3{font-size:18px;font-weight:600;line-height:1.7;letter-spacing:.06em;margin:8px 0 10px}
+.series p{font-size:12.5px;color:var(--text-sub);line-height:2}
+.covers{display:flex;gap:8px;overflow-x:auto;margin:18px -18px 18px;padding:4px 18px 8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.covers::-webkit-scrollbar{display:none}
+.covers img{flex:none;width:30%;aspect-ratio:1600/2560;object-fit:cover;border-radius:6px;box-shadow:0 3px 10px rgba(0,0,0,.1);scroll-snap-align:start}
+.series .btn{display:block;text-decoration:none}
+.history{margin-top:26px}
+.history h3{font-size:12px;color:var(--text-sub);text-align:center;font-weight:500;margin-bottom:12px}
+.history-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.history-grid button{appearance:none;border:0;padding:0;background:none;cursor:pointer}
+.history-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;display:block}
+.history-grid small{display:block;font-size:10px;color:var(--text-faint);margin-top:2px}
+footer{text-align:center;margin-top:30px}
+footer .sign{font-family:"Cormorant Garamond",serif;letter-spacing:3px;font-size:12px;color:var(--warm-gray)}
+</style>
+</head>
+<body>
+<main class="app">
+
+  <!-- intro -->
+  <section class="screen intro on" id="s-intro">
+    <p class="label">Today's Art &amp; Words</p>
+    <div class="intro-art">
+      <img src="pages/v5p07.jpg" alt="">
+      <img src="pages/v2p14.jpg" alt="">
+      <img src="pages/v4p09.jpg" alt="">
+    </div>
+    <h1>今日のわたしに届く<br>一枚のアートと言葉</h1>
+    <p class="lead">いまの気分に近いものを、<br>3つ選ぶだけ。<br>今日のあなたに合う一枚を、そっとお渡しします。</p>
+    <div class="steps">
+      <span><b>1</b>気分</span>
+      <span><b>2</b>欲しいもの</span>
+      <span><b>3</b>言葉</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-main" id="start">はじめる</button>
+      <p class="muted" style="text-align:center">選んだ内容は、このスマホの中だけに保存されます。<br>だれにも見られることはありません。</p>
+    </div>
+  </section>
+
+  <!-- question (re-rendered) -->
+  <section class="screen" id="s-q">
+    <div class="progress" id="progress"></div>
+    <p class="label" id="q-label"></p>
+    <h2 class="q-title" id="q-title"></h2>
+    <p class="q-sub" id="q-sub"></p>
+    <div class="options" id="q-options"></div>
+    <div class="btn-row">
+      <button class="text-btn" id="back">ひとつ前にもどる</button>
+    </div>
+  </section>
+
+  <!-- loading -->
+  <section class="screen loading" id="s-loading">
+    <div class="ring"></div>
+    <p class="mincho" style="font-size:15px">あなたへの一枚を<br>えらんでいます</p>
+  </section>
+
+  <!-- result 1: type -->
+  <section class="screen" id="s-type">
+    <p class="label">1 / 2 &nbsp; Your Day</p>
+    <div class="divider"></div>
+    <div class="card type-card">
+      <p class="kicker">今日のあなたは</p>
+      <h2 id="t-name"></h2>
+      <p class="en" id="t-en"></p>
+      <p class="body" id="t-body"></p>
+      <div class="rx">
+        <p class="t">🌿 今日の小さな処方箋</p>
+        <p id="t-rx"></p>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-main" id="to-art">あなたへの一枚をひらく</button>
+    </div>
+  </section>
+
+  <!-- result 2: art -->
+  <section class="screen" id="s-art">
+    <p class="label">2 / 2 &nbsp; For You</p>
+    <div class="divider"></div>
+    <div class="card art-card">
+      <img id="a-img" alt="">
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-main" id="save">画像にして保存する</button>
+      <button class="btn btn-ghost" id="redraw">同じ気分で、もう一枚ひく</button>
+      <button class="text-btn" id="to-type">「今日のあなた」にもどる</button>
+    </div>
+
+    <div class="card series">
+      <p class="label">Art Book Series</p>
+      <h3 class="mincho">わたしに還るための<br>静かなアートブック</h3>
+      <p>今日の一枚は、このシリーズから届きました。<br>ページをめくるたびに、<br>アートと言葉がそっと寄り添う画集です。</p>
+      <div class="covers">
+        <img src="covers/vol1.jpg" alt="Vol.1"><img src="covers/vol2.jpg" alt="Vol.2"><img src="covers/vol3.jpg" alt="Vol.3"><img src="covers/vol4.jpg" alt="Vol.4"><img src="covers/vol5.jpg" alt="Vol.5">
+      </div>
+      <a class="btn btn-main" id="series-link" href="#" target="_blank" rel="noopener">シリーズをのぞいてみる</a>
+    </div>
+
+    <div class="history" id="history" hidden>
+      <h3>これまでに受け取った一枚</h3>
+      <div class="history-grid" id="history-grid"></div>
+    </div>
+
+    <div class="btn-row" style="padding-top:20px">
+      <button class="text-btn" id="restart">最初からやりなおす</button>
+    </div>
+    <footer><p class="sign">RISA KAWAKAMI</p></footer>
+  </section>
+</main>
+
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <img id="sheet-img" alt="保存用の画像">
+    <p class="muted" id="sheet-hint">画像を長押しして「写真に保存」してください。</p>
+    <div class="btn-row" style="padding-top:12px">
+      <a class="btn btn-main" id="sheet-dl" download="risa_art.jpg" style="text-decoration:none;display:block">ダウンロード</a>
+      <button class="btn btn-ghost" id="sheet-close">とじる</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== 設定（公開前にここだけ書きかえる） =====
+const SERIES_URL = "https://www.amazon.co.jp/dp/B0GX2ZW5MR?binding=kindle_edition"; // アートBookシリーズページ
+
+// ===== 7つの「今日のあなた」。cards はアートBook第1〜5弾から選んだページ（v巻p頁） =====
+const TYPES = [
+  { name:"ほどけたい日", en:"a day to loosen up",
+    body:"ずっと、どこかに力が入っていたのかもしれません。\n人の表情や空気を感じとりながら、\n今日もちゃんと、まわりに合わせてきたあなた。\nそれは、がんばってきた証です。",
+    rx:"肩をすとんと落として、ゆっくり3回だけ息を吐いてみる。",
+    cards:["v5p02","v5p04","v5p06","v2p11","v3p21"] },
+  { name:"ひとりになりたい日", en:"a day for your own time",
+    body:"人といるのは好き。\nでも、楽しい時間のあとほど、\nひとりの静けさが必要になる。\nそれは冷たさではなく、回復のサインです。",
+    rx:"今夜は15分だけ、通知を切って「だれのためでもない時間」をつくる。",
+    cards:["v5p07","v1p33","v3p13","v2p04","v5p20"] },
+  { name:"自分の速さを取り戻す日", en:"a day to find your own pace",
+    body:"まわりの速さに、つい合わせすぎていませんか。\n置いていかれる気がして焦るのは、\nそれだけ真剣に生きているから。\nあなたには、あなたの速さがあります。",
+    rx:"今日やることを1つだけ減らして、空いた時間はぼんやりする。",
+    cards:["v2p12","v5p12","v5p30","v5p31"] },
+  { name:"自分をねぎらう日", en:"a night to thank yourself",
+    body:"がんばったこと、\nだれかに言えていないままかもしれません。\n今日は、あなたがあなたに\n「おつかれさま」を言ってあげる日です。",
+    rx:"寝る前に、今日できたことを1つだけ思い出して、心の中で自分をほめる。",
+    cards:["v2p14","v3p12","v3p14","v4p09","v5p34"] },
+  { name:"感じすぎた日", en:"a day you felt so much",
+    body:"いろんなことを、いっぺんに受け取った日。\n頭がいっぱいなのは、弱いからではなく、\nそれだけ深く感じとれる力があるから。\n今日はその力を、少し休ませてあげましょう。",
+    rx:"頭の中のことを、紙に3行だけ書き出して、そっと閉じる。",
+    cards:["v1p16","v1p17","v5p05","v2p20","v4p03"] },
+  { name:"扉をあけたい日", en:"a day to open a new door",
+    body:"心のどこかが「どこかへ行きたい」と言っています。\nそのワクワクは、あなたの大事な羅針盤。\n大きく動かなくても大丈夫。\n小さな寄り道から、扉はひらいていきます。",
+    rx:"いつもと違う道を歩く、気になっていたお店をのぞく。小さな寄り道を1つ。",
+    cards:["v1p21","v4p06","v5p15","v1p19","v2p05"] },
+  { name:"わたしに還る日", en:"a day to come home to yourself",
+    body:"だれかの期待や「こうあるべき」から少し離れて、\n本来のあなたに戻っていく日。\n何かを足さなくても、\nあなたはもう、ちゃんとあなたです。",
+    rx:"「本当はどうしたい？」と自分に聞いて、浮かんだ答えをメモしておく。",
+    cards:["v1p25","v3p03","v3p10","v4p35","v2p33","v1p31"] }
+];
+
+const QUOTES = {
+  v1p16:"色が多いほど、人生は豊かになる", v1p17:"輝くものを集める人の心は、いつも豊かだ", v1p19:"どこにいても、心は自由に旅できる",
+  v1p21:"旅は、自分の新しい面を発見するための鏡", v1p25:"あなたはすでに、自分の物語の主人公だ", v1p31:"生きることは、輝くことだ",
+  v1p33:"自分だけの楽園を、日常の中に作ろう", v2p04:"今この瞬間に集中することが、最高の瞑想だ", v2p05:"窓の外を見つめるだけで、旅はできる",
+  v2p11:"自然のリズムに身を委ねると、迷いが溶けていく", v2p12:"ゆっくり歩く人だけが、見える景色がある", v2p14:"夜が終わることを、わたしはいつも知っていた",
+  v2p20:"日常のなかに隠れた魔法を、今日も見つけよう", v2p33:"自分を縛るものを手放したとき、海のように自由になれる", v3p03:"舞台は、自分の人生。主役は、あなた自身",
+  v3p10:"美しさとは、自分の物語を生きること", v3p12:"月を見上げるとき、心は自由になる", v3p13:"小さな瓶の中にも、宇宙が宿る",
+  v3p14:"今夜は、ただ美味しいものを食べよう", v3p21:"ただいる、それだけで十分", v4p03:"光の中で、あなたは一番美しい",
+  v4p06:"夢は、追いかけるほど輝く", v4p09:"平和は、こんなに近くにあった", v4p35:"あなたは、あなたのままで、価値がある",
+  v5p02:"力を抜いたとき、わたしは一番やわらかい", v5p04:"ピントが合わない日は、休む日のしるし", v5p05:"空の色が変わるように、わたしも変わっていい",
+  v5p06:"風に吹かれているだけで、十分な日もある", v5p07:"光の入る場所に、心を置いておく", v5p12:"ふわりと浮かぶように、今日を過ごせばいい",
+  v5p15:"夢見ることを、恥ずかしがらなくていい", v5p20:"夜の市場で、忘れていた「すき」に出会う", v5p30:"読みかけの物語は、まだ続いていい",
+  v5p31:"根を張った場所から、物語は咲いていく", v5p34:"何も足さなくても、今日はいい日"
+};
+
+// w: 各タイプ(0〜6)への加点
+const QUESTIONS = [
+  { label:"Question 1", title:"いまの気分に、\nいちばん近いのは？", sub:"考えすぎず、ぱっと目に入ったもので大丈夫です",
+    options:[
+      { t:"なんだか、ずっと肩に力が入ってる", w:{0:2,2:1} },
+      { t:"人と会って、ちょっと疲れた", w:{1:2,4:1} },
+      { t:"がんばった。でも、誰にも言えてない", w:{3:2,6:1} },
+      { t:"いろいろ感じすぎて、頭がいっぱい", w:{4:2,0:1} },
+      { t:"退屈。どこかへ行きたい", w:{5:2,2:1} },
+      { t:"焦ってる。置いていかれそう", w:{2:2,6:1} }
+    ]},
+  { label:"Question 2", title:"今日、いちばん\n欲しいものは？", sub:"",
+    options:[
+      { t:"ぐっすり眠ること", w:{3:2,0:1} },
+      { t:"誰にも話しかけられない時間", w:{1:2,4:1} },
+      { t:"ちいさなワクワク", w:{5:2,2:1} },
+      { t:"「それでいいよ」のひと言", w:{6:2,3:1} },
+      { t:"深呼吸できる余白", w:{0:2,2:1} },
+      { t:"好きなことに没頭する時間", w:{1:1,5:1,6:1} }
+    ]},
+  { label:"Question 3", title:"目にとまった言葉を\nひとつ選んでください", sub:"直感で選んだ言葉に、いまのあなたが映っています", words:true,
+    options:[
+      { t:"ほどける", w:{0:3} }, { t:"ひとり", w:{1:3} },
+      { t:"ゆっくり", w:{2:3} }, { t:"月あかり", w:{3:3} },
+      { t:"きらめき", w:{4:3} }, { t:"とびら", w:{5:3} },
+      { t:"かえる", w:{6:3} }
+    ]}
+];
+
+// ===== 保存（このスマホの中だけ） =====
+const STORE_KEY = "risa_art_gift_v1";
+function load(){ try{ return JSON.parse(localStorage.getItem(STORE_KEY)) || {history:[]}; }catch(e){ return {history:[]}; } }
+function persist(d){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(d)); }catch(e){} }
+
+// ===== 状態 =====
+let qIndex = 0, answers = [], typeIdx = 0, cardId = null;
+const $ = id => document.getElementById(id);
+function show(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on", s.id===id)); window.scrollTo(0,0); }
+
+function renderQ(){
+  const q = QUESTIONS[qIndex];
+  $("progress").innerHTML = QUESTIONS.map((_,i)=>`<i class="${i<=qIndex?"on":""}"></i>`).join("");
+  $("q-label").textContent = q.label;
+  $("q-title").innerHTML = q.title.replace(/\n/g,"<br>");
+  $("q-sub").textContent = q.sub;
+  const box = $("q-options");
+  box.className = "options" + (q.words ? " words" : "");
+  box.innerHTML = "";
+  q.options.forEach((o,i)=>{
+    const b = document.createElement("button");
+    b.className = "opt" + (answers[qIndex]===i ? " sel" : "");
+    b.innerHTML = `<span class="dot"></span><span>${o.t}</span>`;
+    b.onclick = ()=>{
+      answers[qIndex] = i;
+      box.querySelectorAll(".opt").forEach(x=>x.classList.remove("sel"));
+      b.classList.add("sel");
+      setTimeout(next, 380);
+    };
+    box.appendChild(b);
+  });
+  $("back").style.visibility = qIndex===0 ? "hidden" : "visible";
+}
+function next(){
+  if(qIndex < QUESTIONS.length-1){ qIndex++; renderQ(); }
+  else { finish(); }
+}
+
+function diagnose(){
+  const score = [0,0,0,0,0,0,0];
+  answers.forEach((ai,qi)=>{ const w = QUESTIONS[qi].options[ai].w; for(const k in w) score[k]+=w[k]; });
+  const max = Math.max(...score);
+  const tops = score.map((s,i)=>s===max?i:-1).filter(i=>i>=0);
+  const wordPick = Object.keys(QUESTIONS[2].options[answers[2]].w)[0]*1;
+  return tops.includes(wordPick) ? wordPick : tops[0];
+}
+function drawCard(exclude){
+  const pool = TYPES[typeIdx].cards.filter(c=>c!==exclude);
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function finish(){
+  typeIdx = diagnose();
+  cardId = drawCard();
+  show("s-loading");
+  setTimeout(()=>{ renderType(); show("s-type"); record(); }, 1600);
+}
+function renderType(){
+  const t = TYPES[typeIdx];
+  $("t-name").textContent = t.name;
+  $("t-en").textContent = t.en;
+  $("t-body").textContent = t.body;
+  $("t-rx").textContent = t.rx;
+}
+function renderArt(){
+  $("a-img").src = `pages/${cardId}.jpg`;
+  $("a-img").alt = QUOTES[cardId];
+  renderHistory();
+}
+function record(){
+  const d = load();
+  const today = new Date().toLocaleDateString("ja-JP",{month:"numeric",day:"numeric"});
+  d.history.unshift({ card:cardId, type:typeIdx, date:today });
+  d.history = d.history.slice(0,20);
+  persist(d);
+}
+function renderHistory(){
+  const h = load().history.slice(1,9);
+  $("history").hidden = h.length===0;
+  $("history-grid").innerHTML = h.map(x=>`<button data-card="${x.card}" data-type="${x.type}"><img src="pages/${x.card}.jpg" alt="${QUOTES[x.card]}"><small>${x.date}</small></button>`).join("");
+  $("history-grid").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    cardId=b.dataset.card; typeIdx=+b.dataset.type; renderType(); renderArt(); window.scrollTo({top:0,behavior:"smooth"});
+  });
+}
+
+// ===== イベント =====
+$("start").onclick = ()=>{ qIndex=0; answers=[]; renderQ(); show("s-q"); };
+$("back").onclick = ()=>{ if(qIndex>0){ qIndex--; renderQ(); } };
+$("to-art").onclick = ()=>{ renderArt(); show("s-art"); };
+$("to-type").onclick = ()=>show("s-type");
+$("redraw").onclick = ()=>{
+  cardId = drawCard(cardId); record();
+  $("a-img").style.opacity=0;
+  setTimeout(()=>{ renderArt(); $("a-img").style.transition="opacity .6s"; $("a-img").style.opacity=1; },200);
+};
+$("restart").onclick = ()=>show("s-intro");
+$("save").onclick = ()=>{
+  const url = `pages/${cardId}.jpg`;
+  $("sheet-img").src = url; $("sheet-dl").href = url;
+  $("sheet").classList.add("on");
+};
+$("sheet-close").onclick = ()=>$("sheet").classList.remove("on");
+$("sheet").onclick = e=>{ if(e.target.id==="sheet") $("sheet").classList.remove("on"); };
+$("series-link").href = SERIES_URL;
+</script>
+</body>
+</html>
